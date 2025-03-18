@@ -4,6 +4,7 @@ use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
+use Psr\Log\LogLevel;
 
 return [
 
@@ -56,6 +57,13 @@ return [
             'driver' => 'stack',
             'channels' => explode(',', env('LOG_STACK', 'single')),
             'ignore_exceptions' => false,
+        ],
+
+        #you can custom level log to log level on that level or higher
+        'telegram' => [
+            'driver' => 'custom',
+            'via' => \Iqbalatma\LaravelLogTelegramChannel\Logger::class,
+            'level' => LogLevel::INFO
         ],
 
         'single' => [
