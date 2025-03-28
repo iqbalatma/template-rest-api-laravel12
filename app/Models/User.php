@@ -3,14 +3,25 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Iqbalatma\LaravelJwtAuthentication\Contracts\Interfaces\JWTSubject;
 
-//use Iqbalatma\LaravelJwtAuthentication\Interfaces\JWTSubject;
 
+/**
+ * @property string id
+ * @property string username
+ * @property string name
+ * @property string email
+ * @property string password
+ * @property Carbon created_at
+ * @property Carbon updated_at
+ * @property string|null access_token
+ * @property string|null refresh_token
+ */
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

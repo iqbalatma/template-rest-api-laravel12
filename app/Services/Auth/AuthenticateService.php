@@ -1,17 +1,29 @@
 <?php
 
 namespace App\Services\Auth;
+
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Fluent;
+use Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException;
 use Iqbalatma\LaravelServiceRepo\Attributes\ServiceRepository;
 use Iqbalatma\LaravelServiceRepo\BaseService;
 
 #[ServiceRepository(UserRepository::class)]
 class AuthenticateService extends BaseService
 {
-    public static function authenticate(array $credentials): array
+    /**
+     * @param array $credentials
+     * @return Fluent
+     * @throws JWTUnauthenticatedUserException
+     */
+    public static function authenticate(array $credentials): Fluent
     {
-        return Auth::attempt($credentials);
+        if (!($token = Auth::attempt($credentials))) {
+            throw new JWTUnauthenticatedUserException("Invalid credentials");
+        }
+        return new Fluent(array_merge(Auth::user()->toArray(), (array)$token));
     }
 }
