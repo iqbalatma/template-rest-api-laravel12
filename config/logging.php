@@ -7,7 +7,6 @@ use Monolog\Processor\PsrLogMessageProcessor;
 use Psr\Log\LogLevel;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
