@@ -9,6 +9,11 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::prefix("auth")->name("auth.")->controller(AuthenticateController::class)->group(function () {
-    Route::post("authenticate", "authenticate");
-});
+Route::prefix("auth")
+    ->name("auth.")
+    ->controller(AuthenticateController::class)->group(function () {
+        Route::post("authenticate", "authenticate");
+        Route::post("logout", "logout")->middleware("auth.jwt:".\Iqbalatma\LaravelJwtAuthentication\Enums\JWTTokenType::ACCESS->name);
+        Route::post("refresh", "refresh")->middleware("auth.jwt:".\Iqbalatma\LaravelJwtAuthentication\Enums\JWTTokenType::REFRESH->name);
+        Route::get("user", "user")->middleware("auth.jwt:".\Iqbalatma\LaravelJwtAuthentication\Enums\JWTTokenType::ACCESS->name);
+    });

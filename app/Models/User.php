@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Iqbalatma\LaravelJwtAuthentication\Interfaces\JWTSubject;
+use Iqbalatma\LaravelJwtAuthentication\Contracts\Interfaces\JWTSubject;
+
+//use Iqbalatma\LaravelJwtAuthentication\Interfaces\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -20,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
+        'username',
         'name',
         'email',
         'password',

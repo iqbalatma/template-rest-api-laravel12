@@ -10,8 +10,8 @@ use Iqbalatma\LaravelServiceRepo\BaseService;
 #[ServiceRepository(UserRepository::class)]
 class AuthenticateService extends BaseService
 {
-    public static function attempt(array $credentials): User
+    public static function authenticate(array $credentials): array
     {
-        ddapi(Auth::attempt($credentials));
+        return Auth::attempt($credentials);
     }
 }
