@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\PermissionChangedEvent;
+use App\Events\RoleChangedEvent;
+use App\Listeners\ClearCache\ClearPermissionCacheListener;
+use App\Listeners\ClearCache\ClearRoleCacheListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,7 +23,12 @@ class EventServiceProvider extends ServiceProvider
     public static function listen(): array
     {
         return [
-
+            RoleChangedEvent::class => [
+                ClearRoleCacheListener::class
+            ],
+            PermissionChangedEvent::class => [
+                ClearPermissionCacheListener::class
+            ]
         ];
     }
 

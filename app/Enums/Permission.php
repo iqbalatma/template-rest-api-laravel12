@@ -13,9 +13,13 @@ use ArchTech\Enums\Values;
  * @method description
  */
 #[Meta(Description::class, FeatureGroup::class)]
-enum Permission: string {
+enum Permission: string
+{
     use Metadata, Values;
 
     #[Description("can show data permission")] #[FeatureGroup("management - permission")]
     case MANAGEMENT_PERMISSION_SHOW = "management.permission.show";
+
+    #[Description("can show data role")] #[FeatureGroup("management - role")]
+    case MANAGEMENT_ROLE_SHOW = "management.role.show";
 }

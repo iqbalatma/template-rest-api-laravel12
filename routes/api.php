@@ -17,9 +17,19 @@ Route::prefix("auth")
         Route::post("refresh", "refresh")->middleware("auth.jwt:" . \Iqbalatma\LaravelJwtAuthentication\Enums\JWTTokenType::REFRESH->name);
     });
 
-Route::prefix("master")->name("master")->group(function () {
-    Route::controller(\App\Http\Controllers\Master\AuthorizationController::class)->group(function () {
-        Route::get("roles", "roles")->name("roles");
-        Route::get("permissions", "permissions")->name("permissions");
+
+Route::middleware("auth.jwt:" . \Iqbalatma\LaravelJwtAuthentication\Enums\JWTTokenType::ACCESS->name)->group(function () {
+    Route::prefix("master")->name("master")->group(function () {
+        Route::controller(\App\Http\Controllers\Master\AuthorizationController::class)->group(function () {
+            Route::get("roles", "roles")->name("roles");
+            Route::get("permissions", "permissions")->name("permissions");
+        });
+    });
+
+
+    Route::prefix("management")->name("management")->group(function () {
+        Route::prefix("roles")->name("roles.")->controller(\App\Http\Controllers\Management\RoleController::class)->group(function () {
+            Route::get("", "index")->name("index")->middleware("permission:" . \App\Enums\Permission::MANAGEMENT_ROLE_SHOW->value);
+        });
     });
 });

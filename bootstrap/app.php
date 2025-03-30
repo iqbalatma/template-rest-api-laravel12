@@ -16,7 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->context(fn() => [
@@ -43,11 +47,16 @@ return Application::configure(basePath: dirname(__DIR__))
 
 
         $exceptions->render(function (Error|Exception|RuntimeException|Throwable $e) {
-            return response()->json([
-                "rc" => ResponseCode::ERR_INTERNAL_SERVER_ERROR()->name,
-                "message" => isProduction() ? "Something went wrong !" : $e->getMessage(),
-                "timestamp" => Carbon::now(),
-                "payload" => null,
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new APIResponse(
+                message:  isProduction() ? "Something went wrong !" : $e->getMessage(),
+                responseCode: ResponseCode::ERR_UNAUTHENTICATED(),
+                exception: $e
+            );
+//            return response()->json([
+//                "rc" => ResponseCode::ERR_INTERNAL_SERVER_ERROR()->name,
+//                "message" => isProduction() ? "Something went wrong !" : $e->getMessage(),
+//                "timestamp" => Carbon::now(),
+//                "payload" => null,
+//            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         });
     })->create();
