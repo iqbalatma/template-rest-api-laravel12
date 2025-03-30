@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -17,13 +17,15 @@ class UserSeeder extends Seeder
             "password" => "admin",
         ]
     ];
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        foreach (self::DATA as $user){
-            User::query()->create($user);
+        foreach (self::DATA as $user) {
+            $createdRole = User::query()->create($user);
+            $createdRole->assignRole([Role::SUPER_ADMIN->value, Role::ADMIN->value]);
         }
     }
 }

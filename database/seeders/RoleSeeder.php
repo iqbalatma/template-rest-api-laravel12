@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Permission;
 use App\Enums\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,11 +14,17 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $roles = collect();
         foreach (Role::cases() as $role){
-            \App\Models\Role::query()->create([
+            $createdRole = \App\Models\Role::query()->create([
                 "name" => $role->value,
                 "is_mutable" => false
             ]);
+            $roles->push($createdRole);
         }
+
+        /** @var \App\Models\Role $roleAdmin */
+        $roleAdmin = $roles->where('name', Role::ADMIN)->first();
+        $roleAdmin->givePermissionTo(Permission::values());
     }
 }

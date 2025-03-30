@@ -58,7 +58,10 @@ class AuthenticateController extends Controller
         $user = Auth::user();
         $tokens = Auth::refreshToken($user);
         return new APIResponse(
-            new AuthenticateResource(new Fluent(array_merge($user->toArray(), $tokens))),
+            new AuthenticateResource([
+                "user" => $user,
+                "tokens" => $tokens
+            ]),
             $this->getResponseMessage(__FUNCTION__),
         );
     }
