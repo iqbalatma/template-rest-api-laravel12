@@ -30,6 +30,8 @@ Route::middleware("auth.jwt:" . \Iqbalatma\LaravelJwtAuthentication\Enums\JWTTok
     Route::prefix("management")->name("management")->group(function () {
         Route::prefix("roles")->name("roles.")->controller(\App\Http\Controllers\Management\RoleController::class)->group(function () {
             Route::get("", "index")->name("index")->middleware("permission:" . \App\Enums\Permission::MANAGEMENT_ROLE_SHOW->value);
+            Route::post("", "store")->name("store")->middleware("permission:" . \App\Enums\Permission::MANAGEMENT_ROLE_STORE->value);
+            Route::delete("{id}", "destroy")->name("destroy")->middleware("permission:" . \App\Enums\Permission::MANAGEMENT_ROLE_DESTROY->value);
         });
     });
 });

@@ -45,11 +45,27 @@ return Application::configure(basePath: dirname(__DIR__))
             );
         });
 
+        $exceptions->render(function (\Firebase\JWT\ExpiredException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_UNAUTHENTICATED(),
+                exception: $e
+            );
+        });
+
+        $exceptions->render(function (\Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_ENTITY_NOT_FOUND(),
+                exception: $e
+            );
+        });
+
 
         $exceptions->render(function (Error|Exception|RuntimeException|Throwable $e) {
             return new APIResponse(
                 message:  isProduction() ? "Something went wrong !" : $e->getMessage(),
-                responseCode: ResponseCode::ERR_UNAUTHENTICATED(),
+                responseCode: ResponseCode::ERR_INTERNAL_SERVER_ERROR(),
                 exception: $e
             );
 //            return response()->json([

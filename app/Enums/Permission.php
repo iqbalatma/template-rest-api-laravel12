@@ -22,4 +22,8 @@ enum Permission: string
 
     #[Description("can show data role")] #[FeatureGroup("management - role")]
     case MANAGEMENT_ROLE_SHOW = "management.role.show";
+    #[Description("can add new data role")] #[FeatureGroup("management - role")]
+    case MANAGEMENT_ROLE_STORE = "management.role.store";
+    #[Description("can delete data role")] #[FeatureGroup("management - role")]
+    case MANAGEMENT_ROLE_DESTROY = "management.role.destroy";
 }

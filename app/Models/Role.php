@@ -6,6 +6,7 @@ use App\Enums\Table;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Iqbalatma\LaravelServiceRepo\Contracts\Interfaces\DeletableRelationCheck;
 
 /**
  * @property string id
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon created_at
  * @property Carbon updated_at
  */
-class Role extends \Spatie\Permission\Models\Role
+class Role extends \Spatie\Permission\Models\Role implements DeletableRelationCheck
 {
     use HasUuids;
 
@@ -24,4 +25,13 @@ class Role extends \Spatie\Permission\Models\Role
     protected $fillable = [
         "name", "guard_name", "is_mutable"
     ];
+
+    public const array RELATION_CHECK_BEFORE_DELETE = [
+
+    ];
+
+    public function getRelationCheckBeforeDelete(): array
+    {
+        return self::RELATION_CHECK_BEFORE_DELETE;
+    }
 }
