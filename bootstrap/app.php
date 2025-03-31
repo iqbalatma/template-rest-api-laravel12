@@ -62,6 +62,15 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
 
+        $exceptions->render(function (\App\Exceptions\InvalidActionException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_FORBIDDEN(),
+                exception: $e
+            );
+        });
+
+
         $exceptions->render(function (Error|Exception|RuntimeException|Throwable $e) {
             return new APIResponse(
                 message:  isProduction() ? "Something went wrong !" : $e->getMessage(),

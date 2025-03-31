@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Management;
 
 use App\Events\RoleChangedEvent;
+use App\Exceptions\InvalidActionException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Management\Roles\StoreRoleRequest;
 use App\Http\Requests\Management\Roles\UpdateRoleRequest;
@@ -70,7 +71,7 @@ class RoleController extends Controller
      * @param string $id
      * @return APIResponse
      * @throws DeleteDataThatStillUsedException
-     * @throws EmptyDataException
+     * @throws EmptyDataException|InvalidActionException
      */
     public function destroy(RoleService $service, string $id): APIResponse
     {
