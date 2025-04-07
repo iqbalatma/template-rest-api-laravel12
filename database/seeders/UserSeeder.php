@@ -11,7 +11,8 @@ class UserSeeder extends Seeder
     public const array DATA = [
         [
             "id" => "0195c52b-a15e-72a9-9fa0-55075b292001",
-            "name" => "iqbal atma muliawan",
+            "first_name" => "iqbal",
+            "last_name" => "atma muliawan",
             "username" => "iqbalatma",
             "email" => "iqbalatma@gmail.com",
             "password" => "admin",

@@ -20,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
     }
 
 
+    /**
+     * @return \class-string[][]
+     */
     public static function listen(): array
     {
         return [

@@ -3,8 +3,12 @@
 namespace App\Repositories;
 use Iqbalatma\LaravelServiceRepo\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
+use Iqbalatma\LaravelServiceRepo\BaseRepositoryExtend;
 use App\Models\User;
 
+/**
+ * @mixin BaseRepositoryExtend
+ */
 class UserRepository extends BaseRepository
 {
 

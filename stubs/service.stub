@@ -1,8 +1,0 @@
-<?php
-
-namespace *NAMESPACE*;
-use *BASE_SERVICE_PARENT_CLASS_NAMESPACE*;
-
-class *CLASS_NAME* extends *BASE_SERVICE_PARENT_CLASS*
-{
-}

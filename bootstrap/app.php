@@ -45,7 +45,13 @@ return Application::configure(basePath: dirname(__DIR__))
             );
         });
 
-        $exceptions->render(function (\Firebase\JWT\ExpiredException $e) {
+        $exceptions->render(using: function (
+            \Firebase\JWT\ExpiredException|
+            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenException |
+            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidIssuedUserAgent |
+            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenTypeException |
+            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException
+            $e) {
             return new APIResponse(
                 message: $e->getMessage(),
                 responseCode: ResponseCode::ERR_UNAUTHENTICATED(),
@@ -53,7 +59,7 @@ return Application::configure(basePath: dirname(__DIR__))
             );
         });
 
-        $exceptions->render(function (\Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException $e) {
+        $exceptions->render(function (\Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException|\Spatie\Permission\Exceptions\RoleDoesNotExist $e) {
             return new APIResponse(
                 message: $e->getMessage(),
                 responseCode: ResponseCode::ERR_ENTITY_NOT_FOUND(),

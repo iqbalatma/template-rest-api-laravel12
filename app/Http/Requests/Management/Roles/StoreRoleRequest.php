@@ -24,7 +24,9 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => [Rule::unique(Table::roles->name, "name")]
+            "name" => [Rule::unique(Table::roles->name, "name")],
+            "permission_ids" => "array|nullable",
+            "permission_ids.*" => [Rule::exists(Table::permissions->name, "id")],
         ];
     }
 }

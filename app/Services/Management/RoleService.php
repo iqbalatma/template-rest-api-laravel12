@@ -8,13 +8,12 @@ use App\Repositories\RoleRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Iqbalatma\LaravelServiceRepo\Attributes\ServiceRepository;
-use Iqbalatma\LaravelServiceRepo\BaseService;
 use Iqbalatma\LaravelServiceRepo\Contracts\Interfaces\DeletableRelationCheck;
 use Iqbalatma\LaravelServiceRepo\Exceptions\DeleteDataThatStillUsedException;
 use Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException;
 
 #[ServiceRepository(RoleRepository::class)]
-class RoleService extends BaseService
+class RoleService extends \App\Contracts\Abstracts\BaseService
 {
     /**
      * @return Collection
@@ -27,6 +26,42 @@ class RoleService extends BaseService
             Cache::put($key, $roles);
         }
         return $roles;
+    }
+
+    /**
+     * @param array $requestedData
+     * @return Role
+     */
+    public function addNewData(array $requestedData): Role
+    {
+        /** @var Role $role */
+        $role = $this->repository->addNewData($requestedData);
+
+        if (isset($requestedData["permission_ids"])){
+            $role->givePermissionTo($requestedData["permission_ids"]);
+        }
+
+        return $role;
+    }
+
+    /**
+     * @param string|int $id
+     * @param array $requestedData
+     * @return Role
+     * @throws EmptyDataException
+     */
+    public function updateDataById(string|int $id, array $requestedData): Role
+    {
+        $this->checkData($id);
+        /** @var Role $role */
+        $role = $this->getServiceEntity();
+
+
+        if (isset($requestedData["permission_ids"])){
+            $role->givePermissionTo($requestedData["permission_ids"]);
+        }
+
+        return $role;
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace App\Services\Management;
 
+use App\Contracts\Abstracts\BaseService;
 use App\Models\Permission;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Iqbalatma\LaravelServiceRepo\BaseService;
 
 class PermissionService extends BaseService
 {
