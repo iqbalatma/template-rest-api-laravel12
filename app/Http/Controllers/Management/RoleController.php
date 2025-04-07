@@ -7,6 +7,8 @@ use App\Exceptions\InvalidActionException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Management\Roles\StoreRoleRequest;
 use App\Http\Requests\Management\Roles\UpdateRoleRequest;
+use App\Http\Resources\Management\Roles\RoleResource;
+use App\Http\Resources\Management\Roles\RoleResourceCollection;
 use App\Services\Management\RoleService;
 use Iqbalatma\LaravelServiceRepo\Exceptions\DeleteDataThatStillUsedException;
 use Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException;
@@ -30,7 +32,7 @@ class RoleController extends Controller
     public function index(): APIResponse
     {
         return new APIResponse(
-            RoleService::getAllCachedData(),
+            new RoleResourceCollection(RoleService::getAllCachedData()),
             $this->getResponseMessage(__FUNCTION__)
         );
     }
@@ -44,7 +46,7 @@ class RoleController extends Controller
     {
         RoleChangedEvent::dispatch();
         return new APIResponse(
-            $service->addNewData($request->validated()),
+            new RoleResource($service->addNewData($request->validated())),
             $this->getResponseMessage(__FUNCTION__)
         );
     }
@@ -61,7 +63,7 @@ class RoleController extends Controller
     {
         RoleChangedEvent::dispatch();
         return new APIResponse(
-            $service->updateDataById($id, $request->validated()),
+            new RoleResource($service->updateDataById($id, $request->validated())),
             $this->getResponseMessage(__FUNCTION__)
         );
     }
