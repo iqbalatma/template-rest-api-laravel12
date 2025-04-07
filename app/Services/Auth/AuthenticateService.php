@@ -16,14 +16,18 @@ class AuthenticateService extends BaseService
 {
     /**
      * @param array $credentials
-     * @return Fluent
+     * @return array
      * @throws JWTUnauthenticatedUserException
      */
-    public static function authenticate(array $credentials): Fluent
+    public static function authenticate(array $credentials): array
     {
         if (!($token = Auth::attempt($credentials))) {
             throw new JWTUnauthenticatedUserException("Invalid credentials");
         }
-        return new Fluent(array_merge(Auth::user()->toArray(), (array)$token));
+
+        return [
+            "user" => Auth::user(),
+            "tokens" => (array) $token
+        ];
     }
 }

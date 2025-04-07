@@ -16,7 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->context(fn() => [
@@ -41,13 +45,53 @@ return Application::configure(basePath: dirname(__DIR__))
             );
         });
 
+        $exceptions->render(using: function (
+            \Firebase\JWT\ExpiredException|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenException|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidIssuedUserAgent|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenTypeException|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_UNAUTHENTICATED(),
+                exception: $e
+            );
+        });
+
+        $exceptions->render(function (\Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException|\Spatie\Permission\Exceptions\RoleDoesNotExist $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_ENTITY_NOT_FOUND(),
+                exception: $e
+            );
+        });
+
+
+        $exceptions->render(function (\App\Exceptions\InvalidActionException|\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_FORBIDDEN(),
+                exception: $e
+            );
+        });
+
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_VALIDATION(),
+                errors: $e->errors(),
+                exception: $e
+            );
+        });
+
 
         $exceptions->render(function (Error|Exception|RuntimeException|Throwable $e) {
-            return response()->json([
-                "rc" => ResponseCode::ERR_INTERNAL_SERVER_ERROR()->name,
-                "message" => isProduction() ? "Something went wrong !" : $e->getMessage(),
-                "timestamp" => Carbon::now(),
-                "payload" => null,
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return new APIResponse(
+                message: isProduction() ? "Something went wrong !" : $e->getMessage(),
+                responseCode: ResponseCode::ERR_INTERNAL_SERVER_ERROR(),
+                exception: $e
+            );
+//            return response()->json([
+//                "rc" => ResponseCode::ERR_INTERNAL_SERVER_ERROR()->name,
+//                "message" => isProduction() ? "Something went wrong !" : $e->getMessage(),
+//                "timestamp" => Carbon::now(),
+//                "payload" => null,
+//            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         });
     })->create();

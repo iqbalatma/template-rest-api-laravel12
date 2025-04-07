@@ -17,15 +17,18 @@ class AuthenticateResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = $this["user"];
         return [
-            "id" => $this->id,
-            "email" => $this->email,
-            "username" => $this->username,
-            "name" => $this->name,
-            "access_token" => $this->access_token,
-            "refresh_token" => $this->refresh_token,
-            "created_at" => Carbon::parse($this->created_at)->toDateTimeString(),
-            "updated_at" => Carbon::parse($this->updated_at)->toDateTimeString(),
+            "id" => $user->id,
+            "email" => $user->email,
+            "username" => $user->username,
+            "name" => $user->name,
+            "roles" => $user->roles->pluck("name"),
+            "permissions" => $user->getPermissionsViaRoles()->unique('name')->pluck('name'),
+            "access_token" => $this["tokens"]["access_token"],
+            "refresh_token" => $this["tokens"]["refresh_token"],
+            "created_at" => Carbon::parse($user->created_at)->toDateTimeString(),
+            "updated_at" => Carbon::parse($user->updated_at)->toDateTimeString(),
         ];
     }
 }

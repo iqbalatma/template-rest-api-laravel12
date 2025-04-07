@@ -11,4 +11,9 @@ enum Table {
     case job_batches;
     case failed_jobs;
     case password_reset_tokens;
+    case roles;
+    case permissions;
+    case model_has_permissions;
+    case model_has_roles;
+    case role_has_permissions;
 }

@@ -3,13 +3,9 @@
 namespace App\Repositories;
 use Iqbalatma\LaravelServiceRepo\BaseRepository;
 use Illuminate\Database\Eloquent\Builder;
-use Iqbalatma\LaravelServiceRepo\BaseRepositoryExtend;
-use App\Models\User;
+use App\Models\Role;
 
-/**
- * @mixin BaseRepositoryExtend
- */
-class UserRepository extends BaseRepository
+class RoleRepository extends BaseRepository
 {
 
      /**
@@ -18,7 +14,7 @@ class UserRepository extends BaseRepository
      */
     public function getBaseQuery(): Builder
     {
-        return User::query();
+        return Role::query();
     }
 
     /**
