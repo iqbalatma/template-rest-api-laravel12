@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Management\Users\StoreUserRequest;
 use App\Http\Requests\Management\Users\UpdateUserRequest;
 use App\Services\Management\UserService;
-use Illuminate\Http\Request;
 use Iqbalatma\LaravelServiceRepo\Exceptions\DeleteDataThatStillUsedException;
 use Iqbalatma\LaravelServiceRepo\Exceptions\EmptyDataException;
 use Iqbalatma\LaravelUtils\APIResponse;

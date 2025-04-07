@@ -46,12 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(using: function (
-            \Firebase\JWT\ExpiredException|
-            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenException |
-            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidIssuedUserAgent |
-            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenTypeException |
-            \Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException
-            $e) {
+            \Firebase\JWT\ExpiredException|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenException|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidIssuedUserAgent|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidTokenTypeException|\Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException $e) {
             return new APIResponse(
                 message: $e->getMessage(),
                 responseCode: ResponseCode::ERR_UNAUTHENTICATED(),
@@ -68,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
 
-        $exceptions->render(function (\App\Exceptions\InvalidActionException $e) {
+        $exceptions->render(function (\App\Exceptions\InvalidActionException|\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
             return new APIResponse(
                 message: $e->getMessage(),
                 responseCode: ResponseCode::ERR_FORBIDDEN(),
@@ -76,10 +71,19 @@ return Application::configure(basePath: dirname(__DIR__))
             );
         });
 
+        $exceptions->render(function (\Illuminate\Validation\ValidationException $e) {
+            return new APIResponse(
+                message: $e->getMessage(),
+                responseCode: ResponseCode::ERR_VALIDATION(),
+                errors: $e->errors(),
+                exception: $e
+            );
+        });
+
 
         $exceptions->render(function (Error|Exception|RuntimeException|Throwable $e) {
             return new APIResponse(
-                message:  isProduction() ? "Something went wrong !" : $e->getMessage(),
+                message: isProduction() ? "Something went wrong !" : $e->getMessage(),
                 responseCode: ResponseCode::ERR_INTERNAL_SERVER_ERROR(),
                 exception: $e
             );
