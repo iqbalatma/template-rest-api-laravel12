@@ -2,11 +2,8 @@
 
 namespace App\Services\Auth;
 
-use App\Models\User;
 use App\Repositories\UserRepository;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Fluent;
 use Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException;
 use Iqbalatma\LaravelServiceRepo\Attributes\ServiceRepository;
 use Iqbalatma\LaravelServiceRepo\BaseService;
