@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthenticateRequest;
 use App\Http\Resources\Auth\AuthenticateResource;
+use App\Http\ResponseCode;
 use App\Services\Auth\AuthenticateService;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Fluent;
 use Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidActionException;
 use Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException;
@@ -27,15 +31,28 @@ class AuthenticateController extends Controller
 
     /**
      * @param AuthenticateRequest $request
-     * @return APIResponse
+     * @return JsonResponse
      * @throws JWTUnauthenticatedUserException
      */
-    public function authenticate(AuthenticateRequest $request): APIResponse
+    public function authenticate(AuthenticateRequest $request): JsonResponse
     {
-        return new APIResponse(
-            new AuthenticateResource(AuthenticateService::authenticate($request->validated())),
-            $this->getResponseMessage(__FUNCTION__),
-        );
+        if (!($tokens = Auth::attempt($request->validated()))) {
+            throw new JWTUnauthenticatedUserException("Invalid credentials");
+        }
+
+        $response = [
+            "user" => Auth::user(),
+            "tokens" => (array)$tokens
+        ];
+
+        return response()->json([
+            "code" => ResponseCode::SUCCESS()->name,
+            "message" => $this->getResponseMessage(__FUNCTION__),
+            "timestamp" => Carbon::now(),
+            "payload" => [
+                "data" => new AuthenticateResource($response),
+            ],
+        ])->withCookie(getCreatedCookie($response["tokens"]["refresh_token"]));
     }
 
     /**
@@ -51,18 +68,26 @@ class AuthenticateController extends Controller
     }
 
     /**
-     * @return APIResponse
+     * @return JsonResponse
      */
-    public function refresh(): APIResponse
+    public function refresh(): JsonResponse
     {
         $user = Auth::user();
         $tokens = Auth::refreshToken($user);
-        return new APIResponse(
-            new AuthenticateResource([
-                "user" => $user,
-                "tokens" => $tokens
-            ]),
-            $this->getResponseMessage(__FUNCTION__),
-        );
+
+        $response = [
+            "user" => $user,
+            "tokens" => $tokens
+        ];
+
+
+        return response()->json([
+            "code" => ResponseCode::SUCCESS()->name,
+            "message" => $this->getResponseMessage(__FUNCTION__),
+            "timestamp" => Carbon::now(),
+            "payload" => [
+                "data" => new AuthenticateResource($response),
+            ],
+        ])->withCookie(getCreatedCookie($response["tokens"]["refresh_token"]));
     }
 }
