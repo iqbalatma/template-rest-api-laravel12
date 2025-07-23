@@ -52,7 +52,10 @@ class AuthenticateController extends Controller
             "payload" => [
                 "data" => new AuthenticateResource($response),
             ],
-        ])->withCookie(getCreatedCookie($response["tokens"]["refresh_token"]));
+        ])
+            ->withCookie(getCreatedCookieRefreshToken($response["tokens"]["refresh_token"]))
+            ->withCookie(getCreatedCookieAccessTokenVerifier($response["tokens"]["access_token_verifier"]));
+
     }
 
     /**
