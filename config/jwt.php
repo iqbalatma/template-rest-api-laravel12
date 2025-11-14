@@ -1,7 +1,26 @@
 <?php
 
 return [
-    "guard" => "api",
+    /*
+    |--------------------------------------------------------------------------
+    | JWT library guard
+    |--------------------------------------------------------------------------
+    |
+    | This is guard that set in auth, because inside library guard defined manually
+    | Auth::guard(config("jwt.guard"));
+    |
+    */
+    "guard" => "jwt",
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Access token verifier
+    |--------------------------------------------------------------------------
+    |
+    | This is configuration to prevent xss attack by verified access token via cookie httpOnly
+    |
+    */
     "is_using_access_token_verifier" => true,
 
     /*
@@ -108,7 +127,6 @@ return [
     |
     */
     'refresh_token' => [
-        'mechanism' => 'cookie', //cookie/header
         'key' => 'jwt_refresh_token',
         'http_only' => true,
         'path' => "/",
@@ -117,6 +135,16 @@ return [
         'same_site' => 'lax',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Access Token Verifier
+    |--------------------------------------------------------------------------
+    |
+    | Access token verifier is used to prevent XSS attack by binding access token
+    | to this verifier, and make sure any stolen token cannot be used by attacker
+    |
+    |
+    */
     'access_token_verifier' => [
         'key' => 'access_token_verifier',
         'http_only' => true,

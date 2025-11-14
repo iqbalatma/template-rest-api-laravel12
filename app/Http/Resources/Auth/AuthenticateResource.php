@@ -26,7 +26,6 @@ class AuthenticateResource extends JsonResource
             "roles" => $user->roles->pluck("name"),
             "permissions" => $user->getPermissionsViaRoles()->unique('name')->pluck('name'),
             "access_token" => $this["tokens"]["access_token"],
-            "refresh_token" => $this["tokens"]["refresh_token"],
             "created_at" => Carbon::parse($user->created_at)->toDateTimeString(),
             "updated_at" => Carbon::parse($user->updated_at)->toDateTimeString(),
         ];

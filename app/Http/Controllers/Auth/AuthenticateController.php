@@ -6,16 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\AuthenticateRequest;
 use App\Http\Resources\Auth\AuthenticateResource;
 use App\Http\ResponseCode;
-use App\Services\Auth\AuthenticateService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Fluent;
-use Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTInvalidActionException;
 use Iqbalatma\LaravelJwtAuthentication\Exceptions\JWTUnauthenticatedUserException;
-use Iqbalatma\LaravelJwtAuthentication\Services\IssuedTokenService;
 use Iqbalatma\LaravelUtils\APIResponse;
 
 class AuthenticateController extends Controller
@@ -53,8 +47,8 @@ class AuthenticateController extends Controller
                 "data" => new AuthenticateResource($response),
             ],
         ])
-            ->withCookie(getCreatedCookieRefreshToken($response["tokens"]["refresh_token"]))
-            ->withCookie(getCreatedCookieAccessTokenVerifier($response["tokens"]["access_token_verifier"]));
+            ->withCookie(getCreatedCookieAccessTokenVerifier(Auth::getAccessTokenVerifier()))
+            ->withCookie(getCreatedCookieRefreshToken(Auth::getRefreshToken()));
 
     }
 
@@ -63,7 +57,7 @@ class AuthenticateController extends Controller
      */
     public function logout(): APIResponse
     {
-        Auth::logout();
+        Auth::logout(true);
         return new APIResponse(
             null,
             $this->getResponseMessage(__FUNCTION__),
@@ -91,6 +85,7 @@ class AuthenticateController extends Controller
             "payload" => [
                 "data" => new AuthenticateResource($response),
             ],
-        ])->withCookie(getCreatedCookie($response["tokens"]["refresh_token"]));
+        ])  ->withCookie(getCreatedCookieAccessTokenVerifier(Auth::getAccessTokenVerifier()))
+            ->withCookie(getCreatedCookieRefreshToken(Auth::getRefreshToken()));
     }
 }
